@@ -21,9 +21,9 @@ dependencies {
     // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter'
 
-    // Lombok para reducir boilerplate
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // Logging
     implementation 'org.slf4j:slf4j-api'
