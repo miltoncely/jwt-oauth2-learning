@@ -1,20 +1,45 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.5.7'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.learning'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // Lombok para reducir boilerplate
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Tarea personalizada para ejecutar la generación de claves
+tasks.register('generateKeys', JavaExec) {
+    group = 'application'
+    description = 'Genera y distribuye claves RSA'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.learning.keygen.KeyGeneratorApplication'
 }
