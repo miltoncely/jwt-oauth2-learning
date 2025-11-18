@@ -1,7 +1,5 @@
 rootProject.name = 'jwt-oauth2-learning'
 
 include 'key-generator'
-include 'auth-server'
-include 'resource-server'
-include 'client-app'
-include 'shared-library'
+include 'auth-service'
+include 'resource-service'
