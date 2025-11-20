@@ -2,15 +2,12 @@ plugins {
     id 'java-library'
 }
 
-group = 'com.learning'
-version = '1.0.0'
-
-java {
-    sourceCompatibility = '21'
+bootJar {
+    enabled = false
 }
 
-repositories {
-    mavenCentral()
+jar {
+    enabled = true
 }
 
 dependencies {
