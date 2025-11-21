@@ -43,9 +43,4 @@ out/
 **/out/
 **/target/
 
-keygen/keys/
-keygen/output/
-keygen/generated/
-
-**/private-key.pem
-**/public-key.pem
+**/keys/
