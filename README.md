@@ -4,8 +4,6 @@ Proyecto educativo completo de autenticación y autorización con JWT (RS256), S
 
 ## 🏗️ Arquitectura
 
-```mermaid
-graph TB
     KG[Key Generator] -->|Private Key| AS[Auth Service]
     KG -->|Public Key| AS
     KG -->|Public Key| RS[Resource Service]
@@ -145,6 +143,68 @@ public Mono<Boolean> isTokenActive(String token) {
         .defaultIfEmpty(false); // Fail-closed
 }
 ```
+
+## 🔍 Monitoreo de Redis
+
+### Conectarse al CLI de Redis
+```bash
+docker exec -it jwt-redis redis-cli
+```
+
+### Comandos Útiles para Debugging
+
+#### Ver todos los tokens activos
+```bash
+KEYS *
+```
+
+#### Contar tokens activos
+```bash
+DBSIZE
+```
+
+#### Ver tiempo de vida restante de un token
+```bash
+TTL "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+#### Ver el valor asociado a un token
+```bash
+GET "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+#### Monitorear operaciones en tiempo real
+```bash
+MONITOR
+```
+
+#### Ver información del servidor
+```bash
+INFO
+```
+
+#### Ver uso de memoria
+```bash
+INFO memory
+```
+
+#### Ver estadísticas de comandos
+```bash
+INFO stats
+```
+
+### Comandos de Limpieza (⚠️ Usar con cuidado)
+
+#### Eliminar un token específico
+```bash
+DEL "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+#### Cerrar todas las sesiones (eliminar todos los tokens)
+```bash
+FLUSHALL
+```
+> ⚠️ **CUIDADO**: Esto revoca TODOS los tokens activos
 
 ## 🎓 Conceptos Implementados
 - **RS256**: Firma asimétrica (privada firma, pública verifica)
