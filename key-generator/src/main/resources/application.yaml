@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: keygen
+
+key-generator:
+  # Configuración de generación de claves
+  key-size: 4096  # Tamaño en bits (2048, 3072, 4096)
+  algorithm: RSA  # Algoritmo (RSA, EC)
+
+  # Rutas de salida (relativas al proyecto raíz)
+  output:
+    base-path: ./generated-keys
+    private-key-filename: private_key.pem
+    public-key-filename: public_key.pem
+
+  # Distribución automática a módulos
+  distribution:
+    enabled: true
+    targets:
+      - module: auth-server
+        key-type: private
+        destination: ../auth-server/src/main/resources/keys/
+      - module: resource-server
+        key-type: public
+        destination: ../resource-server/src/main/resources/keys/
+      - module: resource-server-backup
+        key-type: public
+        destination: ../resource-server/src/main/resources/keys/backup/
+
+logging:
+  level:
+    com.learning.keygen: DEBUG
+    root: INFO
