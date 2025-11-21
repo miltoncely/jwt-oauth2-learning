@@ -4,6 +4,15 @@ server:
 spring:
   application:
     name: auth-service
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
   data:
     redis:
       repositories:
