@@ -22,7 +22,6 @@ Proyecto educativo completo de autenticación y autorización con JWT (RS256), S
     
     User -->|11. Logout| AS
     AS -->|12. Delete Token| Redis
-```
 
 ## 📦 Módulos
 
