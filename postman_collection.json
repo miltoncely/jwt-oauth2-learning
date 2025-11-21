@@ -1,0 +1,484 @@
+{
+	"info": {
+		"_postman_id": "jwt-oauth2-learning-collection",
+		"name": "JWT OAuth2 Learning",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth Service",
+			"item": [
+				{
+					"name": "Get Token (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/oauth/token?grant_type=password&username=admin&password=123456",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["oauth", "token"],
+							"query": [
+								{"key": "grant_type", "value": "password"},
+								{"key": "username", "value": "admin"},
+								{"key": "password", "value": "123456"}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Token (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/oauth/token?grant_type=password&username=user&password=password",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["oauth", "token"],
+							"query": [
+								{"key": "grant_type", "value": "password"},
+								{"key": "username", "value": "user"},
+								{"key": "password", "value": "password"}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Token (Logout)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/oauth/revoke?token={{access_token}}",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["oauth", "revoke"],
+							"query": [{"key": "token", "value": "{{access_token}}"}]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resource Service",
+			"item": [
+				{
+					"name": "Public Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/public/info",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["public", "info"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Secure Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/secure-data",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "secure-data"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Data (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/admin",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "admin"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Data (User Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/user",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "user"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Personal Data (Own Data)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/users/user",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["api", "users", "user"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scenarios",
+			"item": [
+				{
+					"name": "Multi-Token Lifecycle (Same User)",
+					"item": [
+						{
+							"name": "1. Login - Get Token 1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();",
+											"pm.environment.set(\"token1\", jsonData.access_token);",
+											"console.log(\"Token 1 saved:\", jsonData.access_token.substring(0, 20) + \"...\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/oauth/token?grant_type=password&username=admin&password=123456",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8080",
+									"path": ["oauth", "token"],
+									"query": [
+										{"key": "grant_type", "value": "password"},
+										{"key": "username", "value": "admin"},
+										{"key": "password", "value": "123456"}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2. Login - Get Token 2 (Same User)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();",
+											"pm.environment.set(\"token2\", jsonData.access_token);",
+											"console.log(\"Token 2 saved:\", jsonData.access_token.substring(0, 20) + \"...\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/oauth/token?grant_type=password&username=admin&password=123456",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8080",
+									"path": ["oauth", "token"],
+									"query": [
+										{"key": "grant_type", "value": "password"},
+										{"key": "username", "value": "admin"},
+										{"key": "password", "value": "123456"}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3. Access with Token 1 (Should Succeed)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{"key": "token", "value": "{{token1}}", "type": "string"}]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/admin",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8081",
+									"path": ["api", "admin"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "4. Access with Token 2 (Should Succeed)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{"key": "token", "value": "{{token2}}", "type": "string"}]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/admin",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8081",
+									"path": ["api", "admin"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "5. Revoke Token 1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/oauth/revoke?token={{token1}}",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8080",
+									"path": ["oauth", "revoke"],
+									"query": [{"key": "token", "value": "{{token1}}"}]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "6. Access with Token 1 (Should FAIL - Revoked)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{"key": "token", "value": "{{token1}}", "type": "string"}]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/admin",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8081",
+									"path": ["api", "admin"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "7. Access with Token 2 (Should SUCCEED - Still Valid)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{"key": "token", "value": "{{token2}}", "type": "string"}]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/admin",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8081",
+									"path": ["api", "admin"]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Granular Auth (Personal Data)",
+					"item": [
+						{
+							"name": "1. Login as User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();",
+											"pm.environment.set(\"access_token\", jsonData.access_token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/oauth/token?grant_type=password&username=user&password=password",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8080",
+									"path": ["oauth", "token"],
+									"query": [
+										{"key": "grant_type", "value": "password"},
+										{"key": "username", "value": "user"},
+										{"key": "password", "value": "password"}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2. Access Own Data (Should Succeed)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/users/user",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8081",
+									"path": ["api", "users", "user"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3. Access Other Data (Should Fail)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/users/admin",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8081",
+									"path": ["api", "users", "admin"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "4. Login as Admin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();",
+											"pm.environment.set(\"access_token\", jsonData.access_token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/oauth/token?grant_type=password&username=admin&password=123456",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8080",
+									"path": ["oauth", "token"],
+									"query": [
+										{"key": "grant_type", "value": "password"},
+										{"key": "username", "value": "admin"},
+										{"key": "password", "value": "123456"}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "5. Admin Access User Data (Should Fail)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/users/user",
+									"protocol": "http",
+									"host": ["localhost"],
+									"port": "8081",
+									"path": ["api", "users", "user"]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
